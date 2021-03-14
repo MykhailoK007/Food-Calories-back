@@ -1,4 +1,4 @@
-import { Column, Entity, OneToMany, OneToOne, PrimaryColumn } from 'typeorm';
+import { Column, Entity, Generated, OneToMany, OneToOne, PrimaryColumn } from 'typeorm';
 import { Wishlist } from './wishlist.entity';
 import { Blacklist } from './blacklist.entity';
 import { Feedback } from './feedback.entity';

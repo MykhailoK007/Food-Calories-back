@@ -1,5 +1,6 @@
-import { Column, Entity, PrimaryColumn, OneToMany } from 'typeorm';
+import { Column, Entity, PrimaryColumn, OneToMany, ManyToMany, Generated } from 'typeorm';
 import { IngredientsDishes } from './ingredients-dishes.entity';
+import { MissingDishFB } from './missing-dish-fb.entity';
 
 @Entity()
 export class Ingredient {
@@ -26,4 +27,10 @@ export class Ingredient {
     ingredientsDishes => ingredientsDishes.ingredient,
   )
   ingredientsDishes: IngredientsDishes[];
+
+  @ManyToMany(
+    type => MissingDishFB,
+    missingDishFbs => missingDishFbs.ingredients,
+  )
+  missingDishFbs: MissingDishFB[];
 }

@@ -1,4 +1,4 @@
-import { Column, Entity, OneToMany, PrimaryColumn } from 'typeorm';
+import { Column, Entity, Generated, OneToMany, PrimaryColumn } from 'typeorm';
 import { IngredientsDishes } from './ingredients-dishes.entity';
 import { Wishlist } from './wishlist.entity';
 import { Blacklist } from './blacklist.entity';
