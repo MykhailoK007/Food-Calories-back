@@ -1,4 +1,9 @@
-import { Column, Entity, Generated, OneToMany, PrimaryColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { IngredientsDishes } from './ingredients-dishes.entity';
 import { Wishlist } from './wishlist.entity';
 import { Blacklist } from './blacklist.entity';
@@ -6,7 +11,7 @@ import { Feedback } from './feedback.entity';
 
 @Entity()
 export class Dish {
-  @PrimaryColumn()
+  @PrimaryGeneratedColumn('uuid')
   id: string;
 
   @Column()
@@ -21,7 +26,7 @@ export class Dish {
   @Column()
   calories: number;
 
-  @Column()
+  @Column({ type: 'timestamp without time zone'})
   createdAt: Date;
 
   @OneToMany(

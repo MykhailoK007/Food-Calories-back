@@ -1,10 +1,16 @@
-import { Column, Entity, PrimaryColumn, OneToMany, ManyToMany, Generated } from 'typeorm';
+import {
+  Column,
+  Entity,
+  OneToMany,
+  ManyToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { IngredientsDishes } from './ingredients-dishes.entity';
 import { MissingDishFB } from './missing-dish-fb.entity';
 
 @Entity()
 export class Ingredient {
-  @PrimaryColumn()
+  @PrimaryGeneratedColumn('uuid')
   id: string;
 
   @Column()
@@ -19,7 +25,7 @@ export class Ingredient {
   @Column()
   caloriesPer1g: number;
 
-  @Column()
+  @Column({ type: 'timestamp without time zone' })
   createdAt: Date;
 
   @OneToMany(

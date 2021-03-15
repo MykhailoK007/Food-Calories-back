@@ -1,4 +1,4 @@
-import { Column, Entity, Generated, OneToMany, OneToOne, PrimaryColumn } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Wishlist } from './wishlist.entity';
 import { Blacklist } from './blacklist.entity';
 import { Feedback } from './feedback.entity';
@@ -6,10 +6,10 @@ import { MissingDishFB } from './missing-dish-fb.entity';
 
 @Entity()
 export class User {
-  @PrimaryColumn()
+  @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ unique: true })
+  @Column()
   username: string;
 
   @Column({ nullable: true })
@@ -33,7 +33,7 @@ export class User {
   @Column({ nullable: true })
   phoneNumber: string;
 
-  @Column()
+  @Column({ type: 'timestamp without time zone' })
   createdAt: Date;
 
   @OneToMany(

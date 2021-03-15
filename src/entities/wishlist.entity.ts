@@ -10,7 +10,7 @@ export class Wishlist {
   @PrimaryColumn()
   dishId: string;
 
-  @Column()
+  @Column({ type: 'timestamp without time zone' })
   createdAt: Date;
 
   @ManyToOne(

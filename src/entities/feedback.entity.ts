@@ -13,13 +13,13 @@ export class Feedback {
   @Column()
   message: string;
 
-  @Column()
+  @Column({ type: 'timestamp without time zone'})
   createdAt: Date;
 
-  @Column({ nullable: true })
+  @Column({ type: 'timestamp without time zone', nullable: true })
   deletedAt: Date;
 
-  @Column({ nullable: true })
+  @Column({ type: 'timestamp without time zone', nullable: true })
   updatedAt: Date;
 
   @ManyToOne(

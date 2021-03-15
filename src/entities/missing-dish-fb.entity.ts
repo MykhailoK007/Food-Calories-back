@@ -5,14 +5,14 @@ import {
   JoinTable,
   ManyToMany,
   ManyToOne,
-  PrimaryColumn,
+  PrimaryGeneratedColumn,
 } from 'typeorm';
 import { User } from './user.entity';
 import { Ingredient } from './ingredient.entity';
 
 @Entity()
 export class MissingDishFB {
-  @PrimaryColumn()
+  @PrimaryGeneratedColumn('uuid')
   id: string;
 
   @Column()
@@ -21,7 +21,7 @@ export class MissingDishFB {
   @Column()
   message: string;
 
-  @Column()
+  @Column({ type: 'timestamp without time zone'})
   createdAt: Date;
 
   @ManyToMany(
