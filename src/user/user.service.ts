@@ -15,7 +15,8 @@ export class UserService {
         this.userRepos.insert(userData);
     }
 
-    findOne(username: string) {
-        return this.userRepos.findOne({ username: username });
+    findOne(email: string) {
+        return this.userRepos.findOne({ email: email });
     }
+    
 }

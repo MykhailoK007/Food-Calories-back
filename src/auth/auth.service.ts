@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { SignUpDto } from './dto/signUp.dto';
@@ -12,33 +12,30 @@ export class AuthService {
         private jwtService: JwtService,
     ) { }
 
-    async validateUser(username: string, pass: string) {
-        const user = await this.userService.findOne(username);
-
-        if (bcrypt.compare(pass, user.password)) {
-            const { password, ...result } = user;
-            return result;
-        }
-        
-        return null;
-    }
-
-    login(user: LoginDto) {
-        const payload = { username: user.username, sub: user.id };
-
+    getAccessToken (email: string, id: string) {
         return {
-            access_token: this.jwtService.sign(payload),
+            access_token: this.jwtService.sign({email: email, id: id}),
         };
     }
 
-    async signUp(userData: SignUpDto): Promise<LoginDto> {
-        userData.createdAt = await new Date(Date.now());
-        userData.password = await bcrypt.hash(userData.password, Math.random());
+    async signIn(logUser: LoginDto) {
+        const user = await this.userService.findOne(logUser.email);
 
-        await this.userService.create(userData);
-        
-        const newUser = await this.userService.findOne(userData.username);
-
-        return { username: newUser.username, id: newUser.id }
+        if (await bcrypt.compare(logUser.password, user.password)) {
+             return this.getAccessToken( user.email, user.id);
+        }
+         throw new UnauthorizedException;
     }
+
+    async signUp(userData: SignUpDto) {
+        userData.createdAt = new Date(Date.now());
+        userData.password = bcrypt.hashSync(userData.password, Math.random());
+
+        this.userService.create(userData);
+
+        const newUser = await this.userService.findOne(userData.email);
+
+        return this.getAccessToken(newUser.email, newUser.password);
+    }
+    
 }
