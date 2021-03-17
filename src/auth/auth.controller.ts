@@ -6,17 +6,17 @@ import { Public } from 'src/decorators/noAuth.decorator';
 
 @Controller()
 export class AuthController {
-    constructor(private authService: AuthService) { }
+  constructor(private authService: AuthService) {}
 
-    @Public()
-    @Post('signIn')
-    signIn(@Body() user: LoginDto ){
-        return this.authService.signIn(user);
-    }
+  @Public()
+  @Post('signIn')
+  signIn(@Body() user: LoginDto) {
+    return this.authService.signIn(user);
+  }
 
-    @Public()
-    @Post('signUp')
-    async signUp(@Body() newUser: SignUpDto) {
-        return this.authService.signUp(newUser);
-    }
+  @Public()
+  @Post('signUp')
+  async signUp(@Body() newUser: SignUpDto) {
+    return this.authService.signUp(newUser);
+  }
 }

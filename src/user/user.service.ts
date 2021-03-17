@@ -6,17 +6,16 @@ import { CreateDto } from './dto/create.dto';
 
 @Injectable()
 export class UserService {
-    constructor(
-        @InjectRepository(User)
-        private userRepos: Repository<User>
-    ) { }
+  constructor(
+    @InjectRepository(User)
+    private userRepos: Repository<User>,
+  ) {}
 
-    create(userData: CreateDto) {
-        this.userRepos.insert(userData);
-    }
+  create(userData: CreateDto) {
+    this.userRepos.insert(userData);
+  }
 
-    findOne(email: string) {
-        return this.userRepos.findOne({ email: email });
-    }
-    
+  findOne(email: string) {
+    return this.userRepos.findOne({ email });
+  }
 }

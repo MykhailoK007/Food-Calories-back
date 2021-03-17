@@ -1,29 +1,27 @@
-import { IsEmail, IsPhoneNumber, IsString, IsUrl } from "class-validator";
+import { IsEmail, IsPhoneNumber, IsString, IsUrl } from 'class-validator';
 
 export class CreateDto {
+  @IsString()
+  username: string;
 
-    @IsString()
-    username: string;
+  @IsString()
+  firstName: string;
 
-    @IsString()
-    firstName: string;
+  @IsString()
+  lastName: string;
 
-    @IsString()
-    lastName: string;
+  @IsEmail()
+  email: string;
 
-    @IsEmail()
-    email: string;
+  @IsString()
+  password: string;
 
-    @IsString()
-    password: string;
+  @IsUrl()
+  picture: string;
 
-    @IsUrl()
-    picture: string;
+  @IsString()
+  description: string;
 
-    @IsString()
-    description: string;
-
-    @IsPhoneNumber()
-    phoneNumber: string;
-    
+  @IsPhoneNumber()
+  phoneNumber: string;
 }
