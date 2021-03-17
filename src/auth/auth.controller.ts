@@ -19,5 +19,4 @@ export class AuthController {
     async signUp(@Body() newUser: SignUpDto) {
         return this.authService.signUp(newUser);
     }
-    
 }

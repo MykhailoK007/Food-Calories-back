@@ -37,5 +37,5 @@ export class AuthService {
 
         return this.getAccessToken(newUser.email, newUser.password);
     }
-    
 }
+
