@@ -31,7 +31,7 @@ export class AuthService {
     userData.createdAt = new Date(Date.now());
     userData.password = bcrypt.hashSync(userData.password, Math.random());
 
-    this.userService.create(userData);
+    await this.userService.create(userData);
 
     const newUser = await this.userService.findOne(userData.email);
 
