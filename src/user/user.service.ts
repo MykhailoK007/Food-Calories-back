@@ -10,7 +10,7 @@ export class UserService {
   constructor(
     @InjectRepository(User)
     private userRepos: Repository<User>,
-  ) { }
+  ) {}
 
   async create(userData: CreateDto) {
     await this.userRepos.insert(userData);
@@ -28,13 +28,14 @@ export class UserService {
   }
 
   async update(id: string, updateData: UpdateDto) {
-    if (updateData.email && (await this.userRepos.findOne({ email: updateData.email }))) {
-      throw new NotAcceptableException("Email already exist");
+    if (
+      updateData.email &&
+      (await this.userRepos.findOne({ email: updateData.email }))
+    ) {
+      throw new NotAcceptableException('Email already exist');
     }
-    else {
-      await this.userRepos.update(id, updateData);
-      
-      return this.userRepos.findOne({ id });
-    }
+    await this.userRepos.update(id, updateData);
+
+    return this.userRepos.findOne({ id });
   }
 }
