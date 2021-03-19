@@ -12,10 +12,10 @@ export class UserService {
   ) {}
 
   create(userData: CreateDto) {
-    this.userRepos.insert(userData);
+    return this.userRepos.insert(userData);
   }
 
-  findOne(email: string) {
-    return this.userRepos.findOne({ email });
+  async findOne(email: string) {
+    return await this.userRepos.findOne({ email });
   }
 }

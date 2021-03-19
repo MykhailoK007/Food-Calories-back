@@ -4,10 +4,22 @@ import { Blacklist } from './blacklist.entity';
 import { Feedback } from './feedback.entity';
 import { MissingDishFB } from './missing-dish-fb.entity';
 
+export enum Role {
+  User = 'user',
+  Admin = 'admin',
+}
+
 @Entity()
 export class User {
   @PrimaryGeneratedColumn('uuid')
   id: string;
+
+  @Column({
+    type: 'enum',
+    enum: Role,
+    default: Role.User,
+  })
+  role: Role;
 
   @Column()
   username: string;
