@@ -12,8 +12,8 @@ export class UserService {
     private userRepos: Repository<User>,
   ) { }
 
-  create(userData: CreateDto) {
-    this.userRepos.insert(userData);
+  async create(userData: CreateDto) {
+    await this.userRepos.insert(userData);
   }
 
   findOne(email: string) {
