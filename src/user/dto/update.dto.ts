@@ -1,8 +1,9 @@
 import { IsEmail, IsOptional, IsPhoneNumber, IsString, IsUrl } from 'class-validator';
 
-export class CreateDto {
+export class UpdateDto {
+  @IsOptional()
   @IsString()
-  username: string;
+  username?: string;
 
   @IsOptional()
   @IsString()
@@ -12,11 +13,9 @@ export class CreateDto {
   @IsString()
   lastName?: string;
 
+  @IsOptional()
   @IsEmail()
-  email: string;
-
-  @IsString()
-  password: string;
+  email?: string;
 
   @IsOptional()
   @IsUrl()
