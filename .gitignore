@@ -1,7 +1,10 @@
 # compiled output
 /dist
 /node_modules
+settings.json
 .env
+
+
 
 # Logs
 logs

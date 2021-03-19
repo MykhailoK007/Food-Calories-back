@@ -27,12 +27,13 @@ export class UserService {
     return userWithoutId;
   }
 
-  async update(id: string, updateData: Partial<UpdateDto>) {
-    if ((await this.userRepos.findOne({ email: updateData.email }))) {
-      throw new NotAcceptableException("Email already exist");//send error here? what 400error to send?
+  async update(id: string, updateData: UpdateDto) {
+    if (updateData.email && (await this.userRepos.findOne({ email: updateData.email }))) {
+      throw new NotAcceptableException("Email already exist");
     }
     else {
       await this.userRepos.update(id, updateData);
+      
       return this.userRepos.findOne({ id });
     }
   }
