@@ -10,7 +10,7 @@ export class AuthService {
   constructor(
     private userService: UserService,
     private jwtService: JwtService,
-  ) {}
+  ) { }
 
   getAccessToken(email: string, id: string) {
     return {
@@ -35,6 +35,6 @@ export class AuthService {
 
     const newUser = await this.userService.findOne(userData.email);
 
-    return this.getAccessToken(newUser.email, newUser.password);
+    return this.getAccessToken(newUser.email, newUser.id);
   }
 }
