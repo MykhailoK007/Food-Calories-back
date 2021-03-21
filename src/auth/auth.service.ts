@@ -35,7 +35,7 @@ export class AuthService {
     await this.userService.create(userData);
 
     const newUser = await this.userService.findOne(userData.email);
-    
-    return this.getAccessToken(newUser.email, newUser.password, newUser.role);
+
+    return this.getAccessToken(newUser.email, newUser.id, newUser.role);
   }
 }
