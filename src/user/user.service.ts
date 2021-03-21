@@ -12,12 +12,12 @@ export class UserService {
     private userRepos: Repository<User>,
   ) {}
 
-  async create(userData: CreateDto) {
-    await this.userRepos.insert(userData);
+  create(userData: CreateDto) {
+    return this.userRepos.insert(userData);
   }
 
-  findOne(email: string) {
-    return this.userRepos.findOne({ email });
+  async findOne(email: string) {
+    return await this.userRepos.findOne({ email });
   }
 
   async get(id: string) {

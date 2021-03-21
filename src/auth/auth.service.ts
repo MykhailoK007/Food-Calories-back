@@ -4,6 +4,7 @@ import * as bcrypt from 'bcrypt';
 import { SignUpDto } from './dto/signUp.dto';
 import { LoginDto } from './dto/login.dto';
 import { UserService } from './../user/user.service';
+import { Role } from 'src/entities/user.entity';
 
 @Injectable()
 export class AuthService {
@@ -12,9 +13,9 @@ export class AuthService {
     private jwtService: JwtService,
   ) { }
 
-  getAccessToken(email: string, id: string) {
+  getAccessToken(email: string, id: string, role: Role) {
     return {
-      access_token: this.jwtService.sign({ email, id }),
+      access_token: this.jwtService.sign({ email, id, role }),
     };
   }
 
@@ -22,7 +23,7 @@ export class AuthService {
     const user = await this.userService.findOne(logUser.email);
 
     if (await bcrypt.compare(logUser.password, user.password)) {
-      return this.getAccessToken(user.email, user.id);
+      return this.getAccessToken(user.email, user.id, user.role);
     }
     throw new UnauthorizedException();
   }
@@ -34,7 +35,7 @@ export class AuthService {
     await this.userService.create(userData);
 
     const newUser = await this.userService.findOne(userData.email);
-
-    return this.getAccessToken(newUser.email, newUser.id);
+    
+    return this.getAccessToken(newUser.email, newUser.password, newUser.role);
   }
 }
