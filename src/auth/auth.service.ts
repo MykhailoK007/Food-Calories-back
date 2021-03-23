@@ -1,3 +1,4 @@
+import { IToken } from './../interfaces/token.interface';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
@@ -13,13 +14,13 @@ export class AuthService {
     private jwtService: JwtService,
   ) { }
 
-  getAccessToken(email: string, id: string, role: Role) {
+  getAccessToken(email: string, id: string, role: Role): IToken {
     return {
       access_token: this.jwtService.sign({ email, id, role }),
     };
   }
 
-  async signIn(logUser: LoginDto) {
+  async signIn(logUser: LoginDto): Promise<IToken> {
     const user = await this.userService.findOne(logUser.email);
 
     if (await bcrypt.compare(logUser.password, user.password)) {
@@ -28,14 +29,14 @@ export class AuthService {
     throw new UnauthorizedException();
   }
 
-  async signUp(userData: SignUpDto) {
+  async signUp(userData: SignUpDto): Promise<IToken> {
     userData.createdAt = new Date(Date.now());
     userData.password = bcrypt.hashSync(userData.password, Math.random());
 
     await this.userService.create(userData);
 
     const newUser = await this.userService.findOne(userData.email);
-    
-    return this.getAccessToken(newUser.email, newUser.password, newUser.role);
+
+    return this.getAccessToken(newUser.email, newUser.id, newUser.role);
   }
 }
