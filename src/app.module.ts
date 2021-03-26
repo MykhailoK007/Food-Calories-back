@@ -11,7 +11,7 @@ import { JwtGuard } from './auth/guards/jwt.guard';
   imports: [
     UserModule,
     AuthModule,
-    TypeOrmModule.forRoot()
+    TypeOrmModule.forRoot(),
   ],
   controllers: [AppController],
   providers: [
@@ -22,4 +22,4 @@ import { JwtGuard } from './auth/guards/jwt.guard';
     },
   ],
 })
-export class AppModule {}
+export class AppModule { }

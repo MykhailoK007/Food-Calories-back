@@ -4,6 +4,7 @@ import {
   ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
+import { IToken } from './../interfaces/token.interface';
 import { Controller, Post, Body } from '@nestjs/common';
 import { LoginDto } from './dto/login.dto';
 import { SignUpDto } from './dto/signUp.dto';
@@ -19,7 +20,7 @@ export class AuthController {
   @Post('signIn')
   @ApiCreatedResponse({ description: 'User successfully authorized.' })
   @ApiUnauthorizedResponse({ description: 'Unauthorized.' })
-  signIn(@Body() user: LoginDto) {
+  signIn(@Body() user: LoginDto): Promise<IToken> {
     return this.authService.signIn(user);
   }
 
@@ -28,7 +29,7 @@ export class AuthController {
   @ApiCreatedResponse({ description: 'User has been successfully created.' })
   @ApiBadRequestResponse({ description: 'Bad request body.' })
   @ApiUnauthorizedResponse({ description: 'Unauthorized.' })
-  async signUp(@Body() newUser: SignUpDto) {
+  async signUp(@Body() newUser: SignUpDto): Promise<IToken> {
     return this.authService.signUp(newUser);
   }
 }
