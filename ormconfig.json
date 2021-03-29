@@ -3,7 +3,7 @@
     "host": "localhost",
     "port": 5432,
     "username": "postgres",
-    "password": "romka007",
+    "password": "",
     "database": "food_calories",
     "entities": ["dist/**/*.entity{.ts,.js}"],
     "autoLoadEntities": true,

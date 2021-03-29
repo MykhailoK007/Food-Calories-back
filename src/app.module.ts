@@ -6,11 +6,13 @@ import { AppService } from './app.service';
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { JwtGuard } from './auth/guards/jwt.guard';
+import { IngredientModule } from 'src/ingredient/ingredient.module';
 
 @Module({
   imports: [
     UserModule,
     AuthModule,
+    IngredientModule,
     TypeOrmModule.forRoot(),
   ],
   controllers: [AppController],

@@ -16,6 +16,9 @@ export class Ingredient {
   @Column()
   name: string;
 
+  @Column()
+  created_by: string;
+
   @Column({ nullable: true })
   description: string;
 
@@ -26,7 +29,7 @@ export class Ingredient {
   caloriesPer1g: number;
 
   @Column({ type: 'timestamp without time zone' })
-  createdAt: Date;
+  created_at: Date;
 
   @OneToMany(
     type => IngredientsDishes,
