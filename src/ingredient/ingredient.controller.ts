@@ -1,3 +1,4 @@
+import { IId } from './interfaces/id.inteface';
 import { IPagination } from './interfaces/pagination.interface';
 import { UpdateIngredientDto } from './dto/update.dto';
 import { CreateIngredientDto } from './dto/create.dto';
@@ -11,16 +12,16 @@ export class IngredientController {
 
   @Get()
   findAll(@Request() req, @Query() paginationData: IPagination): Promise<PaginatedProductsResultDto> {
-    return this.ingredientService.findAll(Number(paginationData.page), Number(paginationData.limit), req.user.id);
+    return this.ingredientService.findAll(paginationData, req.user.id);
   }
 
-  @Post('create')
-  createIngredient(@Request() req, @Body() newIngredient: CreateIngredientDto): void {
+  @Post('add')
+  createIngredient(@Request() req, @Body() newIngredient: CreateIngredientDto): Promise<IId> {
     return this.ingredientService.create(newIngredient, req.user.id);
   }
 
   @Patch('update/:id')
-  updateIngredient(@Request() req, @Param('id') id: string, @Body() updateIngredient: UpdateIngredientDto): Promise<void> {
+  updateIngredient(@Request() req, @Param('id') id: string, @Body() updateIngredient: UpdateIngredientDto): Promise<IIngridient> {
     return this.ingredientService.update(id, updateIngredient, req.user.id);
   }
 

@@ -26,7 +26,7 @@ export class Ingredient {
   picture: string;
 
   @Column()
-  caloriesPer1g: number;
+  calories_per_1g: number;
 
   @Column({ type: 'timestamp without time zone' })
   created_at: Date;
