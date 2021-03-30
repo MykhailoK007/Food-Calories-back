@@ -26,6 +26,9 @@ export class Dish {
   @Column()
   calories: number;
 
+  @Column()
+  author: string;
+
   @Column({ type: 'timestamp without time zone'})
   createdAt: Date;
 
