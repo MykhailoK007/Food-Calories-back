@@ -1,9 +1,7 @@
-import { Ingredient } from './../../entities/ingredient.entity';
-
 export class PaginatedProductsResultDto {
-  data: Ingredient[];
+  data: IIngridient[];
   metaData: {
-    page: number;
+    offSet: number;
     limit: number;
     totalCount: number;
   };

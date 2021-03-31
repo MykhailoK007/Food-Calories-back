@@ -3,6 +3,7 @@ import { Wishlist } from './wishlist.entity';
 import { Blacklist } from './blacklist.entity';
 import { Feedback } from './feedback.entity';
 import { MissingDishFB } from './missing-dish-fb.entity';
+import { Ingredient } from 'src/entities/ingredient.entity';
 
 export enum Role {
   User = 'user',
@@ -71,4 +72,10 @@ export class User {
     feedback => feedback.user,
   )
   missingDishFBs: MissingDishFB[];
+
+  // @OneToMany(
+  //   type => Ingredient,
+  //   ingredient => ingredient.user,
+  // )
+  // ingredients: Ingredient[]
 }

@@ -1,4 +1,3 @@
-import { IPagination } from './interfaces/pagination.interface';
 import { Ingredient } from './../entities/ingredient.entity';
 import { CreateIngredientDto } from './dto/create.dto';
 import { BadRequestException, Injectable } from '@nestjs/common';
@@ -7,6 +6,8 @@ import { Repository } from 'typeorm';
 import { UpdateIngredientDto } from './dto/update.dto';
 import { PaginatedProductsResultDto } from './dto/paginationResult.dto';
 import { IId } from './interfaces/id.inteface';
+import { PaginationDto } from './dto/pagination.dto';
+import { plainToClass } from 'class-transformer';
 
 @Injectable()
 export class IngredientService {
@@ -15,19 +16,21 @@ export class IngredientService {
     private ingredientRepos: Repository<Ingredient>,
   ) { }
 
-  async findAll(metaData: IPagination, ownerId: string): Promise<PaginatedProductsResultDto> {
-    const page = !metaData.page ? 1 : Number(metaData.page);
-    const limit = !metaData.limit ? 25 : Number(metaData.limit);
-    const sortBy = metaData.sortByDate === 'true' ? 'Ingredient.createdAt' : 'Ingredient.caloriesPer1g';
-    const ownOrall = metaData.ownIng === 'true' ? `Ingredient.createdBy = '${ownerId}'` : 'true';
-    const skippedItems = (page - 1) * limit;
-    const totalCount = ownOrall === 'true' ? await this.ingredientRepos.count() : await this.ingredientRepos.count({ createdBy: ownerId });
+  async findAll(paginationData: PaginationDto, ownerId: string): Promise<PaginatedProductsResultDto> {
+    const metaData = plainToClass(PaginationDto, paginationData);
+    const limit = metaData.validLimit;
+    const offSet = metaData.validOffset;
+    const sortBy = metaData.sortBy;
+    const ownOrall = metaData.ownOrall(ownerId);
+    const totalCount = ownOrall === 'true' ?
+      await this.ingredientRepos.count() :
+      await this.ingredientRepos.count({ createdBy: ownerId });
 
     const products: Ingredient[] = await this.ingredientRepos
       .createQueryBuilder()
-      .orderBy(`${sortBy}`, 'ASC')
+      .orderBy(sortBy, 'ASC')
       .where(ownOrall)
-      .offset(skippedItems)
+      .offset(offSet)
       .limit(limit)
       .getMany();
 
@@ -36,7 +39,7 @@ export class IngredientService {
       metaData: {
         totalCount,
         limit,
-        page,
+        offSet,
       },
     };
   }
@@ -44,12 +47,17 @@ export class IngredientService {
   async create(ingredientData: CreateIngredientDto, ownerId: string): Promise<IId> {
     ingredientData.createdAt = new Date(Date.now());
     ingredientData.createdBy = ownerId;
-    return { id: (await this.ingredientRepos.save(ingredientData)).id };
+    const newIngredient = await this.ingredientRepos.save(ingredientData);
+
+    return { id: newIngredient.id };
   }
 
   async update(id: string, ingredientData: UpdateIngredientDto, ownerId: string): Promise<IIngridient> {
-    if (await this.ingredientRepos.findOne({ createdBy: ownerId, id })) {
+    const toUpdateIngredient = await this.ingredientRepos.findOne({ createdBy: ownerId, id });
+
+    if (toUpdateIngredient) {
       this.ingredientRepos.update(id, ingredientData);
+
       return this.ingredientRepos.findOne(id);
     } else {
       throw new BadRequestException(`Can't update`);
