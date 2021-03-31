@@ -6,9 +6,9 @@ export class CreateIngredientDto {
   name: string;
 
   @IsNumber()
-  calories_per_1g: number;
+  caloriesPer1g: number;
 
-  created_at: Date;
+  createdAt: Date;
 
-  created_by: string;
+  createdBy: string;
 }

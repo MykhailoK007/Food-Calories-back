@@ -23,9 +23,9 @@ interface IIngridient {
   name: string;
   description: string | null;
   picture: string | null; // url
-  calories_per_1g: number; // calories per 1 gram of ingridient
-  created_at: Date;
-  created_by: String;
+  caloriesPer1g: number; // calories per 1 gram of ingridient
+  createdAt: Date;
+  createdBy: string;
 }
 
 interface IDish {

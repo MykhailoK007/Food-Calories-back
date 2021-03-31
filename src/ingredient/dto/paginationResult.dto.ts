@@ -6,5 +6,5 @@ export class PaginatedProductsResultDto {
     page: number;
     limit: number;
     totalCount: number;
-  }
+  };
 }
