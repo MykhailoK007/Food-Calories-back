@@ -1,9 +1,9 @@
-import { IsArray, IsNumber, IsString, IsUUID } from "class-validator";
+import { IsNumber, IsUUID } from 'class-validator';
 
 export class IngredientInfoDto {
-    @IsUUID()
-    id: string;
+  @IsUUID()
+  id: string;
 
-    @IsNumber()
-    weight: number;
+  @IsNumber()
+  weight: number;
 }

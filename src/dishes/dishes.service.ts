@@ -1,12 +1,14 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Dish } from 'src/entities/dish.entity';
 import { Ingredient } from 'src/entities/ingredient.entity';
 import { IngredientsDishes } from 'src/entities/ingredients-dishes.entity';
 import { CreateDishDto } from './dto/create-dish.dto';
-import { PaginatedDishesDto } from './dto/paginated-dishes.dto';
 import { UpdateDishDto } from './dto/update-dish.dto';
+import { PaginatedValuesDto } from '../dto/paginated-dishes.dto';
+import { IId } from '../../dist/interfaces/id.interface';
+import { QueryMetaDto } from '../dto/pagination.dto';
 
 @Injectable()
 export class DishesService {
@@ -16,66 +18,106 @@ export class DishesService {
     @InjectRepository(IngredientsDishes)
     private ingrDishRepository: Repository<IngredientsDishes>,
     @InjectRepository(Ingredient)
-    private ingredientRepository: Repository<Ingredient>) { }
+    private ingredientRepository: Repository<Ingredient>,
+  ) {}
 
-  async create(createDishDto: CreateDishDto) {
-    const ingrIds = createDishDto.ingredientInfos.map(info => info.id)
-    const ingrWeights = createDishDto.ingredientInfos.map(info => info.weight)
+  async create(createDishDto: CreateDishDto, author: string): Promise<IId> {
+    const ingrIds = createDishDto.ingredientInfos.map(info => info.id);
+    const ingrWeights = createDishDto.ingredientInfos.map(info => info.weight);
 
     const ingredients = await this.ingredientRepository.findByIds(ingrIds);
     const ingrCalories = ingredients.map(ingr => ingr.caloriesPer1g);
 
-    const calories = ingrCalories.reduce((prev, curr, i) => {
-      return prev + (curr * ingrWeights[i]);
-    })
-
-    createDishDto.createdAt = new Date(Date.now());
-    createDishDto.calories = calories;
-
-    const dish = this.dishRepository.create(createDishDto);
-
-    const ingrDishes = ingrIds.map((id, i) => {
-      return {
-        ingredientId: id,
-        dishId: dish.id,
-        weight: ingrWeights[i],
-        calories: ingrCalories[i] * ingrWeights[i],
-      }
+    const calories = ingredients.map(({ id, caloriesPer1g }) => {
+      const { weight } = createDishDto.ingredientInfos.find(
+        ({ id: iId }) => iId === id,
+      );
+      return calories.push(weight * caloriesPer1g);
     });
 
-    this.ingrDishRepository.create(ingrDishes);
+    const totalCalories = calories.reduce((prev, curr) => prev + curr, 0);
+
+    const dish = this.dishRepository.create({
+      ...createDishDto,
+      author,
+      calories: totalCalories,
+    });
+    const { id: dishId } = await this.dishRepository.save(dish);
+
+    const ingrDishesLike = ingrIds.map((id, i) => {
+      return {
+        dishId,
+        ingredientId: id,
+        weight: ingrWeights[i],
+        calories: ingrCalories[i] * ingrWeights[i],
+      };
+    });
+
+    const ingrDishes = this.ingrDishRepository.create(ingrDishesLike);
+    await this.ingrDishRepository.save(ingrDishes);
+
+    return { id: dishId };
   }
 
-  async findAll(page: number, limit: number, ownerId: string): Promise<PaginatedDishesDto> {
-    page = page || 1;
-    limit = limit || 25;
-
-    const skippedItems = (page - 1) * limit;
-    const totalCount = await this.dishRepository.count();
-    const dishes: Dish[] = await this.dishRepository
-      .createQueryBuilder()
-      .where(`created_by = '${ownerId}'`)
-      .offset(skippedItems)
-      .limit(limit)
-      .getMany();
+  async findAll(
+    author: string,
+    { offset, limit, sort }: QueryMetaDto,
+  ): Promise<PaginatedValuesDto<Dish>> {
+    // const [dishes, count]: [Dish[], number] = await this.dishRepository
+    //   .createQueryBuilder()
+    //   .orderBy(sort, 'ASC')
+    //   .where(`author = :author`, { author })
+    //   .offset(offset)
+    //   .limit(limit)
+    //   .getManyAndCount();
+    const [dishes, count]: [
+      Dish[],
+      number,
+    ] = await this.dishRepository.findAndCount({
+      where: {
+        author,
+      },
+      skip: offset,
+      take: limit,
+      order: {
+        [sort]: 'ASC',
+      },
+    });
 
     return {
-      totalCount,
-      page,
-      limit,
-      dishes
+      meta: {
+        count,
+        sort,
+        offset,
+        limit,
+      },
+      values: dishes,
+    };
+  }
+
+  async update(
+    id: string,
+    author: string,
+    updateDishDto: UpdateDishDto,
+  ): Promise<Dish> {
+    const foundDish = await this.dishRepository.findOne({ id, author });
+
+    if (foundDish) {
+      await this.dishRepository.update(id, updateDishDto);
+
+      return this.dishRepository.findOne(id);
+    } else {
+      throw new BadRequestException(`No dish with id ${id} found`);
     }
   }
 
-  async update(id: string, authorId: string, updateDishDto: UpdateDishDto) {
-    if (await this.dishRepository.findOne({ id, author: authorId })) {
-      this.dishRepository.update(id, updateDishDto);
-    }
-  }
+  async remove(id: string, author: string): Promise<void> {
+    const foundDish = await this.dishRepository.findOne({ id, author });
 
-  async remove(id: string, authorId: string) {
-    if (await this.dishRepository.findOne({ id, author: authorId })) {
-      this.dishRepository.delete(id);
+    if (foundDish) {
+      await this.dishRepository.delete(id);
+    } else {
+      throw new BadRequestException(`No dish with id ${id} found`);
     }
   }
 }

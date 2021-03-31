@@ -1,9 +1,4 @@
-import {
-  Column,
-  Entity,
-  OneToMany,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { IngredientsDishes } from './ingredients-dishes.entity';
 import { Wishlist } from './wishlist.entity';
 import { Blacklist } from './blacklist.entity';
@@ -26,10 +21,13 @@ export class Dish {
   @Column()
   calories: number;
 
-  @Column()
+  @Column({ type: 'uuid' })
   author: string;
 
-  @Column({ type: 'timestamp without time zone'})
+  @Column({
+    type: 'timestamp without time zone',
+    default: new Date(Date.now()),
+  })
   createdAt: Date;
 
   @OneToMany(
