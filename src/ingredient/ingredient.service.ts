@@ -18,9 +18,7 @@ export class IngredientService {
 
   async findAll(paginationData: PaginationDto, ownerId: string): Promise<PaginatedProductsResultDto> {
     const metaData = plainToClass(PaginationDto, paginationData);
-    const limit = metaData.validLimit;
-    const offSet = metaData.validOffset;
-    const sortBy = metaData.sortBy;
+    const { validLimit: limit, validOffset: offSet, sortBy } = metaData;
     const ownOrall = metaData.ownOrall(ownerId);
     const totalCount = ownOrall === 'true' ?
       await this.ingredientRepos.count() :
@@ -47,6 +45,7 @@ export class IngredientService {
   async create(ingredientData: CreateIngredientDto, ownerId: string): Promise<IId> {
     ingredientData.createdAt = new Date(Date.now());
     ingredientData.createdBy = ownerId;
+
     const newIngredient = await this.ingredientRepos.save(ingredientData);
 
     return { id: newIngredient.id };

@@ -1,5 +1,6 @@
 import { Expose } from 'class-transformer';
 import { IsOptional, IsString } from 'class-validator';
+import enums from '../../helpers/enums';
 
 export class PaginationDto {
   @IsOptional()
@@ -8,7 +9,7 @@ export class PaginationDto {
 
   @IsOptional()
   @IsString()
-  page?: string;
+  offset?: string;
 
   @IsOptional()
   @IsString()
@@ -16,7 +17,7 @@ export class PaginationDto {
 
   @IsOptional()
   @IsString()
-  sortByDate?: string;
+  sort?: string;
 
   @Expose()
   get validLimit(): number {
@@ -27,16 +28,20 @@ export class PaginationDto {
 
   @Expose()
   get validOffset(): number {
-    const page = !this.page ? 1 : Number(this.page);
+    const offset = !this.offset ? 0 : Number(this.offset);
 
-    return (page - 1) * this.validLimit;
+    return offset;
   }
 
   @Expose()
   get sortBy(): string {
-    const sortBy = this.sortByDate === 'true' ? 'Ingredient.createdAt' : 'Ingredient.caloriesPer1g';
-
-    return sortBy;
+    const queryPrefix = 'Ingredient.';
+    const defaultSort = 'caloriesPer1g';
+    if ((Object).values(enums.ingredients).includes(this.sort)) {
+      return queryPrefix + this.sort;
+    } else {
+      return queryPrefix + defaultSort;
+    }
   }
 
   @Expose()

@@ -73,9 +73,9 @@ export class User {
   )
   missingDishFBs: MissingDishFB[];
 
-  // @OneToMany(
-  //   type => Ingredient,
-  //   ingredient => ingredient.user,
-  // )
-  // ingredients: Ingredient[]
+  @OneToMany(
+    type => Ingredient,
+    ingredient => ingredient.user,
+  )
+  ingredients: Ingredient[];
 }

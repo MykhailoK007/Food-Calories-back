@@ -45,9 +45,9 @@ export class Ingredient {
   )
   missingDishFbs: MissingDishFB[];
 
-  // @ManyToOne(
-  //   type => User,
-  //   user => user.ingredients
-  // )
-  // user: User
+  @ManyToOne(
+    type => User,
+    user => user.ingredients,
+  )
+  user: User;
 }
