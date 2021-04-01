@@ -25,12 +25,14 @@ export class Feedback {
   @ManyToOne(
     type => User,
     user => user.feedbacks,
+    { onDelete: 'CASCADE' },
   )
   user: User;
 
   @ManyToOne(
     type => Dish,
     dish => dish.feedbacks,
+    { onDelete: 'CASCADE' },
   )
   dish: Dish;
 }

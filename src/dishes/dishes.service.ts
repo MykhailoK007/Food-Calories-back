@@ -7,8 +7,8 @@ import { IngredientsDishes } from 'src/entities/ingredients-dishes.entity';
 import { CreateDishDto } from './dto/create-dish.dto';
 import { UpdateDishDto } from './dto/update-dish.dto';
 import { PaginatedValuesDto } from '../dto/paginated-dishes.dto';
-import { IId } from '../../dist/interfaces/id.interface';
-import { QueryMetaDto } from '../dto/pagination.dto';
+import { IId } from '../interfaces/id.interface';
+import { QueryMetaDto, SortingParams } from '../dto/query-meta.dto';
 
 @Injectable()
 export class DishesService {
@@ -23,16 +23,15 @@ export class DishesService {
 
   async create(createDishDto: CreateDishDto, author: string): Promise<IId> {
     const ingrIds = createDishDto.ingredientInfos.map(info => info.id);
-    const ingrWeights = createDishDto.ingredientInfos.map(info => info.weight);
-
     const ingredients = await this.ingredientRepository.findByIds(ingrIds);
-    const ingrCalories = ingredients.map(ingr => ingr.caloriesPer1g);
 
+    const weights = [];
     const calories = ingredients.map(({ id, caloriesPer1g }) => {
       const { weight } = createDishDto.ingredientInfos.find(
         ({ id: iId }) => iId === id,
       );
-      return calories.push(weight * caloriesPer1g);
+      weights.push(weight);
+      return weight * caloriesPer1g;
     });
 
     const totalCalories = calories.reduce((prev, curr) => prev + curr, 0);
@@ -42,19 +41,21 @@ export class DishesService {
       author,
       calories: totalCalories,
     });
+
     const { id: dishId } = await this.dishRepository.save(dish);
 
-    const ingrDishesLike = ingrIds.map((id, i) => {
+    const ingrDishesLike = ingredients.map(({ id }, i) => {
       return {
         dishId,
         ingredientId: id,
-        weight: ingrWeights[i],
-        calories: ingrCalories[i] * ingrWeights[i],
+        weight: weights[i],
+        calories: calories[i],
       };
     });
 
-    const ingrDishes = this.ingrDishRepository.create(ingrDishesLike);
-    await this.ingrDishRepository.save(ingrDishes);
+    await this.ingrDishRepository.insert(ingrDishesLike);
+    // const ingrDishes = this.ingrDishRepository.create(ingrDishesLike);
+    // await this.ingrDishRepository.save(ingrDishes);
 
     return { id: dishId };
   }
@@ -63,26 +64,21 @@ export class DishesService {
     author: string,
     { offset, limit, sort }: QueryMetaDto,
   ): Promise<PaginatedValuesDto<Dish>> {
-    // const [dishes, count]: [Dish[], number] = await this.dishRepository
-    //   .createQueryBuilder()
-    //   .orderBy(sort, 'ASC')
-    //   .where(`author = :author`, { author })
-    //   .offset(offset)
-    //   .limit(limit)
-    //   .getManyAndCount();
-    const [dishes, count]: [
-      Dish[],
-      number,
-    ] = await this.dishRepository.findAndCount({
-      where: {
-        author,
-      },
-      skip: offset,
-      take: limit,
-      order: {
-        [sort]: 'ASC',
-      },
-    });
+    offset = offset || 0;
+    limit = limit || 25;
+    sort = sort || SortingParams.Calories;
+
+    const [dishes, count]: [Dish[], number] = await this.dishRepository
+      .createQueryBuilder('dish')
+      .leftJoin('dish.blacklist', 'b')
+      .innerJoinAndSelect('dish.ingredientsDishes', 'i_d')
+      .innerJoinAndSelect('i_d.ingredient', 'i')
+      .where('b."userId" != :author', { author })
+      .orWhere('b."userId" ISNULL')
+      .orderBy(`dish.${sort}`, 'ASC')
+      .offset(offset)
+      .limit(limit)
+      .getManyAndCount();
 
     return {
       meta: {
@@ -91,7 +87,7 @@ export class DishesService {
         offset,
         limit,
       },
-      values: dishes,
+      items: dishes,
     };
   }
 
@@ -101,7 +97,6 @@ export class DishesService {
     updateDishDto: UpdateDishDto,
   ): Promise<Dish> {
     const foundDish = await this.dishRepository.findOne({ id, author });
-
     if (foundDish) {
       await this.dishRepository.update(id, updateDishDto);
 
@@ -113,7 +108,6 @@ export class DishesService {
 
   async remove(id: string, author: string): Promise<void> {
     const foundDish = await this.dishRepository.findOne({ id, author });
-
     if (foundDish) {
       await this.dishRepository.delete(id);
     } else {

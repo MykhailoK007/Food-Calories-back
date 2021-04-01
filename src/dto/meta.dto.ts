@@ -1,5 +1,5 @@
 import { IsNumber, Min } from 'class-validator';
-import { QueryMetaDto } from './pagination.dto';
+import { QueryMetaDto } from './query-meta.dto';
 
 export class MetaDto extends QueryMetaDto {
   @IsNumber()

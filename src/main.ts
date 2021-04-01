@@ -7,7 +7,8 @@ async function bootstrap(): Promise<void> {
   const app = await NestFactory.create(AppModule);
   app.setGlobalPrefix('api');
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
-
+  app.enableCors();
+  
   const config = new DocumentBuilder()
     .setTitle('FoodCalories API')
     .setVersion('1.0')

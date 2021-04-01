@@ -4,7 +4,7 @@ import { MetaDto } from './meta.dto';
 
 export class PaginatedValuesDto<T> {
   @IsArray()
-  values: T[];
+  items: T[];
 
   @ValidateNested()
   @Type(() => MetaDto)

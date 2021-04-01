@@ -16,12 +16,14 @@ export class Wishlist {
   @ManyToOne(
     type => User,
     user => user.wishlist,
+    { onDelete: 'CASCADE' },
   )
   user: User;
 
   @ManyToOne(
     type => Dish,
     dish => dish.wishlist,
+    { onDelete: 'CASCADE' },
   )
   dish: Dish;
 }
