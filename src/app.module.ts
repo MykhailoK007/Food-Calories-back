@@ -7,6 +7,9 @@ import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { JwtGuard } from './auth/guards/jwt.guard';
 import { DishesModule } from './dishes/dishes.module';
+import { BlacklistModule } from './blacklist/blacklist.module';
+import { WhitelistModule } from './whitelist/whitelist.module';
+import { WishlistModule } from './wishlist/wishlist.module';
 
 @Module({
   imports: [
@@ -14,6 +17,9 @@ import { DishesModule } from './dishes/dishes.module';
     AuthModule,
     TypeOrmModule.forRoot(),
     DishesModule,
+    BlacklistModule,
+    WhitelistModule,
+    WishlistModule,
   ],
   controllers: [AppController],
   providers: [

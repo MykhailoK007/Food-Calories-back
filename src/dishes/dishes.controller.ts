@@ -66,7 +66,6 @@ export class DishesController {
     @Param('id') id: string,
     @Body() updateDishDto: UpdateDishDto,
   ): Promise<Dish> {
-    console.log('a', userId, role)
     return this.dishesService.update(id, userId, updateDishDto);
   }
 

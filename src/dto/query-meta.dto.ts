@@ -4,6 +4,7 @@ import { IsEnum, IsNumber, IsOptional, Min } from 'class-validator';
 export enum SortingParams {
   Calories = 'calories',
   Wishlisted = 'wishlist',
+  CreatedAt = 'createdAt',
 }
 
 export class QueryMetaDto {
