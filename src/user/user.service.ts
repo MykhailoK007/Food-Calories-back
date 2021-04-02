@@ -8,6 +8,15 @@ import { CreateDto } from './dto/create.dto';
 
 @Injectable()
 export class UserService {
+
+
+
+
+
+
+
+
+  
   constructor(
     @InjectRepository(User)
     private userRepos: Repository<User>,
