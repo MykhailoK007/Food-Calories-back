@@ -1,6 +1,6 @@
 import { Expose } from 'class-transformer';
 import { IsOptional, IsString } from 'class-validator';
-import enums from '../../helpers/enums';
+import { ingredientsSortBy } from '../../helpers/enums';
 
 export class PaginationDto {
   @IsOptional()
@@ -37,7 +37,7 @@ export class PaginationDto {
   get sortBy(): string {
     const queryPrefix = 'Ingredient.';
     const defaultSort = 'caloriesPer1g';
-    if ((Object).values(enums.ingredients).includes(this.sort)) {
+    if (ingredientsSortBy[this.sort]) {
       return queryPrefix + this.sort;
     } else {
       return queryPrefix + defaultSort;
