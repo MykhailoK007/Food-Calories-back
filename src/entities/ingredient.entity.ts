@@ -5,6 +5,7 @@ import {
   ManyToMany,
   PrimaryGeneratedColumn,
   ManyToOne,
+  JoinColumn,
 } from 'typeorm';
 import { IngredientsDishes } from './ingredients-dishes.entity';
 import { MissingDishFB } from './missing-dish-fb.entity';
@@ -49,5 +50,6 @@ export class Ingredient {
     type => User,
     user => user.ingredients,
   )
+  @JoinColumn({ name: 'createdBy' })
   user: User;
 }
