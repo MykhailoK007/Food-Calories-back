@@ -4,9 +4,12 @@ import {
   OneToMany,
   ManyToMany,
   PrimaryGeneratedColumn,
+  ManyToOne,
+  JoinColumn,
 } from 'typeorm';
 import { IngredientsDishes } from './ingredients-dishes.entity';
 import { MissingDishFB } from './missing-dish-fb.entity';
+import { User } from './user.entity';
 
 @Entity()
 export class Ingredient {
@@ -28,6 +31,9 @@ export class Ingredient {
   @Column({ type: 'timestamp without time zone' })
   createdAt: Date;
 
+  @Column()
+  createdBy: string;
+
   @OneToMany(
     type => IngredientsDishes,
     ingredientsDishes => ingredientsDishes.ingredient,
@@ -39,4 +45,11 @@ export class Ingredient {
     missingDishFbs => missingDishFbs.ingredients,
   )
   missingDishFbs: MissingDishFB[];
+
+  @ManyToOne(
+    type => User,
+    user => user.ingredients,
+  )
+  @JoinColumn({ name: 'createdBy' })
+  user: User;
 }
