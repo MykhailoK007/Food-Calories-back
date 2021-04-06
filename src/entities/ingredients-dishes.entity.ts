@@ -19,12 +19,14 @@ export class IngredientsDishes {
   @ManyToOne(
     type => Ingredient,
     ingredient => ingredient.ingredientsDishes,
+    { onDelete: 'CASCADE' },
   )
   ingredient: Ingredient;
 
   @ManyToOne(
     type => Dish,
     dish => dish.ingredientsDishes,
+    { onDelete: 'CASCADE' },
   )
   dish: Dish;
 }

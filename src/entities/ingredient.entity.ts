@@ -36,7 +36,7 @@ export class Ingredient {
 
   @OneToMany(
     type => IngredientsDishes,
-    ingredientsDishes => ingredientsDishes.ingredient,
+    ingredientsDishes => ingredientsDishes.ingredient
   )
   ingredientsDishes: IngredientsDishes[];
 

@@ -15,13 +15,15 @@ export class Blacklist {
 
   @ManyToOne(
     type => User,
-    user => user.blacklist,
+    user => user.blacklist, 
+    { onDelete: 'CASCADE' },
   )
   user: User;
 
   @ManyToOne(
     type => Dish,
-    dish => dish.blacklist,
+    dish => dish.blacklist, 
+    { onDelete: 'CASCADE' },
   )
   dish: Dish;
 }
