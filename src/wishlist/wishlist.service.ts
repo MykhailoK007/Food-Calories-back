@@ -14,12 +14,8 @@ export class WishlistService {
 
   async findAll(
     userId: string,
-    { offset, limit, sort }: QueryMetaDto,
+    { offset = 0, limit = 25, sort = SortingParams.CreatedAt}: QueryMetaDto,
   ): Promise<PaginatedValuesDto<Wishlist>> {
-    offset = offset || 0;
-    limit = limit || 25;
-    sort = sort || SortingParams.CreatedAt;
-
     const [wishlist, count]: [Wishlist[], number] = await this.wlRepository
       .createQueryBuilder('wishlist')
       .innerJoinAndSelect('wishlist.dish', 'd')

@@ -34,7 +34,6 @@ export class BlacklistController {
     return this.blacklistService.findAll(userId, meta);
   }
 
-  // @Post()
   @Post(':id')
   @ApiBearerAuth()
   @ApiOkResponse({ description: 'Dish has been added to blacklist.' })
@@ -43,7 +42,6 @@ export class BlacklistController {
   add(
     @Param('id') dishId: string,
     @Req() { user: { id: userId } },
-    // @Body() { dishId },
   ): Promise<void> {
     return this.blacklistService.add(userId, dishId);
   }

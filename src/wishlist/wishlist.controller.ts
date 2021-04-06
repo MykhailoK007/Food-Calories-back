@@ -36,7 +36,6 @@ export class WishlistController {
     return this.wishlistService.findAll(userId, meta);
   }
 
-  // @Post()
   @Post(':id')
   @ApiBearerAuth()
   @ApiOkResponse({ description: 'Dish has been added to wishlist.' })
@@ -45,7 +44,6 @@ export class WishlistController {
   add(
     @Param('id') dishId: string,
     @Req() { user: { id: userId } },
-    // @Body() { dishId },
   ): Promise<void> {
     return this.wishlistService.add(userId, dishId);
   }

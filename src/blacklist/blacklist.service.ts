@@ -14,12 +14,8 @@ export class BlacklistService {
 
   async findAll(
     userId: string,
-    { offset, limit, sort }: QueryMetaDto,
+    { offset = 0, limit = 25, sort = SortingParams.CreatedAt}: QueryMetaDto,
   ): Promise<PaginatedValuesDto<Blacklist>> {
-    offset = offset || 0;
-    limit = limit || 25;
-    sort = sort || SortingParams.CreatedAt;
-
     const [blacklist, count]: [Blacklist[], number] = await this.blRepository
       .createQueryBuilder('blacklist')
       .innerJoinAndSelect('blacklist.dish', 'd')
